@@ -16,7 +16,7 @@ style = "fg:#D769A1"
 
 [directory]
 read_only = " "
-style = "fg:#7DAEA3"
+style = "fg:#D3869B"
 
 
 [docker_context]
@@ -92,7 +92,8 @@ symbol = " "
 style = "fg:#D769A1"
 
 [nix_shell]
-symbol = " "
+symbol = ""
+format = "via [$symbol nix]($style) "
 style = "fg:#D769A1"
 
 [nodejs]
@@ -141,8 +142,7 @@ Unknown = " "
 Windows = " "
 
 [package]
-symbol = " "
-style = "fg:#D769A1"
+disabled = true
 
 [pijul_channel]
 symbol = "🪺 "
