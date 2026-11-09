@@ -1,0 +1,189 @@
+[buf]
+symbol = " "
+style = "fg:#D769A1"
+
+[c]
+symbol = " "
+style = "fg:#D769A1"
+
+[conda]
+symbol = " "
+style = "fg:#D769A1"
+
+[dart]
+symbol = " "
+style = "fg:#D769A1"
+
+[directory]
+read_only = " "
+style = "fg:#7DAEA3"
+
+
+[docker_context]
+symbol = " "
+style = "fg:#D769A1"
+
+[elixir]
+symbol = " "
+style = "fg:#BCBAA0"
+
+[elm]
+symbol = " "
+style = "fg:#BCBAA0"
+
+[fossil_branch]
+symbol = " "
+style = "fg:#A0BCA2"
+
+[git_branch]
+symbol = " "
+style = "fg:#BCBAA0"
+
+[golang]
+symbol = " "
+style = "fg:#D769A1"
+
+
+[guix_shell]
+symbol = " "
+style = "fg:#D769A1"
+
+[haskell]
+symbol = " "
+style = "fg:#D769A1"
+
+[haxe]
+symbol = "⌘ "
+style = "fg:#D769A1"
+
+[hg_branch]
+symbol = " "
+style = "fg:#A0BCA2"
+
+[hostname]
+ssh_symbol = " "
+style = "fg:#DFAA520"
+
+[git_status]
+style = "fg:#BCBAA0"
+
+[java]
+symbol = " "
+style = "fg:#D769A1"
+
+[julia]
+symbol = " "
+style = "fg:#D769A1"
+
+[lua]
+symbol = " "
+style = "fg:#D769A1"
+
+[memory_usage]
+symbol = " "
+style = "fg:#BCBAA0"
+
+[meson]
+symbol = "喝 "
+style = "fg:#D769A1"
+
+[nim]
+symbol = " "
+style = "fg:#D769A1"
+
+[nix_shell]
+symbol = " "
+style = "fg:#D769A1"
+
+[nodejs]
+symbol = " "
+style = "fg:#D769A1"
+
+[os.symbols]
+Alpaquita = " "
+Alpine = " "
+Amazon = " "
+Android = " "
+Arch = " "
+Artix = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = "﯑ "
+Gentoo = " "
+HardenedBSD = "ﲊ "
+Illumos = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+OpenBSD = " "
+openSUSE = " "
+OracleLinux = " "
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+Redox = " "
+Solus = "ﴱ "
+SUSE = " "
+Ubuntu = " "
+Unknown = " "
+Windows = " "
+
+[package]
+symbol = " "
+style = "fg:#D769A1"
+
+[pijul_channel]
+symbol = "🪺 "
+style = "fg:#D769A1"
+
+[python]
+symbol = " "
+style = "fg:#D769A1"
+
+[rlang]
+symbol = "ﳒ "
+style = "fg:#D769A1"
+
+[ruby]
+symbol = " "
+style = "fg:#D769A1"
+
+[rust]
+symbol = " "
+style = "fg:#D769A1"
+
+
+[scala]
+symbol = " "
+style = "fg:#D769A1"
+
+[spack]
+symbol = "🅢 "
+style = "fg:#D769A1"
+
+[azure]
+disabled = true
+format = '[ﴃ $subscription]($style) '
+style = "fg:#D769A1"
+
+[terraform]
+format = "via [$symbol]($style) "
+symbol = "󱁢 "
+style = "fg:#D769A1"
+
+
+[cmd_duration]
+format = ""
+style = "fg:#BCBAA0"

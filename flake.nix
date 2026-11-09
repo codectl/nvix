@@ -126,10 +126,30 @@
             '';
             meta.mainProgram = "tmux";
           };
+
+          # Shell layer: prompt + CLI tools the zshrc relies on, plus the zshrc itself at
+          # share/nvix/zshrc. Machine-specific settings belong in ~/.zshrc.local, not here.
+          shellTools = with pkgs; [ starship zoxide fzf fd eza gh zsh-autosuggestions ];
+
+          zshrc = pkgs.runCommand "nvix-zshrc" { } ''
+            substitute ${./zsh/zshrc} $out \
+              --subst-var-by starship_config ${./starship/starship.toml} \
+              --subst-var-by autosuggestions ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+          '';
+
+          shell = pkgs.symlinkJoin {
+            name = "nvix-shell";
+            paths = shellTools;
+            postBuild = ''
+              mkdir -p $out/share/nvix
+              ln -s ${zshrc} $out/share/nvix/zshrc
+              ln -s ${./starship/starship.toml} $out/share/nvix/starship.toml
+            '';
+          };
         in
         {
-          inherit nvim tmux;
-          default = pkgs.symlinkJoin { name = "nvix"; paths = [ nvim tmux ]; meta.mainProgram = "nvim"; };
+          inherit nvim tmux shell;
+          default = pkgs.symlinkJoin { name = "nvix"; paths = [ nvim tmux shell ]; meta.mainProgram = "nvim"; };
         });
 
       apps = forAllSystems (pkgs: {
