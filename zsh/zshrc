@@ -27,14 +27,6 @@ if command -v fzf >/dev/null; then
 fi
 
 alias grep='grep --color=never'
-# nix develop from the nearest flake.nix above $PWD, ignoring .git boundaries
-# (plain `nix develop` stops searching at the first nested git repo)
-nd() {
-  local d=$PWD
-  while [[ $d != / && ! -f $d/flake.nix ]]; do d=${d:h}; done
-  [[ -f $d/flake.nix ]] || { echo "nd: no flake.nix above $PWD" >&2; return 1; }
-  nix develop "$d" -c zsh
-}
 command -v zoxide >/dev/null && alias cd='z'
 
 alias ls='eza --color=auto --icons'

@@ -4,7 +4,8 @@ return {
   cmd          = { "TmuxCreateSession", "TmuxSwitchSession", "TmuxToggleArchive" },
   config       = function()
     require("tmuxer").setup({
-      -- nvim_alias = "NVIM_APPNAME=nvim-dev nvim",
+      -- nd: nvim inside the project's devShell (nearest flake.nix), plain nvim if there is none
+      nvim_alias = "nd nvim",
       workspaces = {
         {
           name = "workspaces",

@@ -140,15 +140,31 @@
               --subst-var-by autosuggestions ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
           '';
 
+          nvixZsh = pkgs.runCommand "nvix-zsh" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
+            makeWrapper ${lib.getExe pkgs.zsh} $out/bin/nvix-zsh \
+              --set ZDOTDIR ${zdotdir} \
+              --prefix PATH : ${lib.makeBinPath shellTools}
+          '';
+
+          # `nd [cmd...]`: run cmd (default: nvix-zsh) inside `nix develop` of the nearest flake.nix
+          # above $PWD, ignoring .git boundaries (plain `nix develop` stops at the first nested git
+          # repo). No flake above → runs cmd directly. A script rather than an rc function so
+          # tmuxer, keybinds and the host shell can call it too.
+          nd = pkgs.writeShellScriptBin "nd" ''
+            [ $# -gt 0 ] || set -- ${nvixZsh}/bin/nvix-zsh
+            d=$PWD
+            while [ "$d" != / ] && [ ! -f "$d/flake.nix" ]; do d=$(dirname "$d"); done
+            if [ -f "$d/flake.nix" ]; then
+              exec nix develop "$d" -c "$@"
+            else
+              echo "nd: no flake.nix above $PWD, running without devShell" >&2
+              exec "$@"
+            fi
+          '';
+
           shell = pkgs.symlinkJoin {
             name = "nvix-shell";
-            paths = shellTools;
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-            postBuild = ''
-              makeWrapper ${lib.getExe pkgs.zsh} $out/bin/nvix-zsh \
-                --set ZDOTDIR ${zdotdir} \
-                --prefix PATH : ${lib.makeBinPath shellTools}
-            '';
+            paths = shellTools ++ [ nvixZsh nd ];
             meta.mainProgram = "nvix-zsh";
           };
         in
