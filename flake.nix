@@ -34,7 +34,7 @@
           treesitter =
             let
               ts = vp.nvim-treesitter.withPlugins (p: with p; [
-                bash dockerfile go gomod gosum helm json lua markdown markdown_inline
+                bash dockerfile go gomod gosum helm json lua markdown markdown_inline nix
                 python regex rust terraform hcl vim vimdoc yaml query
               ]);
             in
@@ -89,9 +89,9 @@
             cp -r ${./nvim} $out
           '';
 
-          # Binaries the config shells out to. Language servers are intentionally NOT here:
-          # they come from each project's devShell and are picked up via PATH.
-          nvimRuntimeDeps = with pkgs; [ ripgrep fd git ];
+          # Binaries the config shells out to. Language servers come from each project's devShell
+          # via PATH — except nil/nixfmt: every project has a flake.nix, so Nix editing is editor-level.
+          nvimRuntimeDeps = with pkgs; [ ripgrep fd git nil nixfmt ];
 
           nvim = pkgs.symlinkJoin {
             name = "nvix-nvim";
