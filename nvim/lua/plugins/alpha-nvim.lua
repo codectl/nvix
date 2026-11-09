@@ -20,7 +20,7 @@ return {
          ███████████ ███    ███ █████████ █████ █████ ████ █████
         ██████  █████████████████████ ████ █████ █████ ████ ██████
 
-                              nix shell
+                              nix only
      ]]
     dashboard.section.header.val = vim.split(logo, "\n")
     dashboard.section.buttons.val = vim.tbl_map(function(btn)
