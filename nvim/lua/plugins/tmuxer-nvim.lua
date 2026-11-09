@@ -12,7 +12,7 @@ return {
           path = "~/workspaces"
         }
       },
-      max_depth = 2,
+      max_depth = 3,
       theme = "ivy",
       previewer = false,
       border = true,
