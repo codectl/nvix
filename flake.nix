@@ -112,6 +112,7 @@
             substitute ${./tmux/tmux.conf} $out \
               --subst-var out \
               --subst-var-by zsh ${shell}/bin/nvix-zsh \
+              --subst-var-by nd ${shell}/bin/nd \
               --subst-var-by sensible ${pkgs.tmuxPlugins.sensible}/share/tmux-plugins/sensible/sensible.tmux \
               --subst-var-by tmux_fzf ${pkgs.tmuxPlugins.tmux-fzf}/share/tmux-plugins/tmux-fzf/main.tmux
           '';
@@ -154,12 +155,9 @@
             [ $# -gt 0 ] || set -- ${nvixZsh}/bin/nvix-zsh
             d=$PWD
             while [ "$d" != / ] && [ ! -f "$d/flake.nix" ]; do d=$(dirname "$d"); done
-            if [ -f "$d/flake.nix" ]; then
-              exec nix develop "$d" -c "$@"
-            else
-              echo "nd: no flake.nix above $PWD, running without devShell" >&2
-              exec "$@"
-            fi
+            # no flake above → run cmd as-is; starship's nix_shell segment shows which case you're in
+            [ -f "$d/flake.nix" ] && exec nix develop "$d" -c "$@"
+            exec "$@"
           '';
 
           shell = pkgs.symlinkJoin {
