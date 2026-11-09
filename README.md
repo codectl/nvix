@@ -5,7 +5,8 @@ Neovim 0.12, tmux and the zsh toolset, fully packaged with Nix: plugins, treesit
 ```sh
 nix run github:codectl/nvix            # nvim
 nix run github:codectl/nvix#tmux       # tmux
-nix profile install github:codectl/nvix   # nvim + tmux + shell tools on PATH
+nix run github:codectl/nvix#shell      # nvix-zsh
+nix profile install github:codectl/nvix   # nvim, tmux, nvix-zsh on PATH
 ```
 
 ## Layout
@@ -13,12 +14,7 @@ nix profile install github:codectl/nvix   # nvim + tmux + shell tools on PATH
 - `flake.nix` — `packages.{nvim,tmux,shell,default}`; plugins come from `nixpkgs.vimPlugins`, the rest (`tmuxer.nvim`, `splitjoin.nvim`, `quickr-preview.vim`, `vim-maximizer`) are flake inputs. `nix flake update` bumps everything.
 - `nvim/` — the Neovim config (lazy.nvim specs, `lsp/*.lua`). lazy.nvim loads plugins from the Nix store via `dev.path`; installing/updating from inside nvim is disabled.
 - `tmux/tmux.conf` — tmux config; `tmux-sensible` and `tmux-fzf` are wired in from nixpkgs instead of tpm.
-- `zsh/zshrc`, `starship/starship.toml` — machine-independent shell config, installed to `share/nvix/`. Hook it up with a two-line `~/.zshrc`:
-
-  ```sh
-  source ~/.nix-profile/share/nvix/zshrc
-  [ -f ~/.zshrc.local ] && source ~/.zshrc.local   # KUBECONFIG, DB URLs, per-machine PATH
-  ```
+- `zsh/zshrc`, `starship/starship.toml` — the shell config, baked into `nvix-zsh`: a wrapped zsh with `ZDOTDIR` in the store, plus `starship`, `zoxide`, `fzf`, `fd`, `eza`, `gh` on its `PATH`. The host's own zsh and `~/.zshrc` are never touched. The nvix `tmux` uses `nvix-zsh` as its default shell. Per-machine settings (KUBECONFIG, DB URLs, extra `PATH`) go in `~/.zshrc.local`, sourced by `nvix-zsh` if present.
 
 ## Language servers
 

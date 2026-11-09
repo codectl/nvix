@@ -36,3 +36,6 @@ alias lt='eza --tree --color=auto --icons'
 alias lh='eza -ld .* --color=auto --icons'
 alias l='eza --color=auto'
 alias lrs='eza --tree --long --level=2 --color=auto --icons'
+
+# per-machine settings (KUBECONFIG, DB URLs, extra PATH, ...)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"

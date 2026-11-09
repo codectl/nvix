@@ -111,6 +111,7 @@
           tmuxConf = pkgs.runCommand "nvix-tmux.conf" { } ''
             substitute ${./tmux/tmux.conf} $out \
               --subst-var out \
+              --subst-var-by zsh ${shell}/bin/nvix-zsh \
               --subst-var-by sensible ${pkgs.tmuxPlugins.sensible}/share/tmux-plugins/sensible/sensible.tmux \
               --subst-var-by tmux_fzf ${pkgs.tmuxPlugins.tmux-fzf}/share/tmux-plugins/tmux-fzf/main.tmux
           '';
@@ -127,12 +128,14 @@
             meta.mainProgram = "tmux";
           };
 
-          # Shell layer: prompt + CLI tools the zshrc relies on, plus the zshrc itself at
-          # share/nvix/zshrc. Machine-specific settings belong in ~/.zshrc.local, not here.
-          shellTools = with pkgs; [ starship zoxide fzf fd eza gh zsh-autosuggestions ];
+          # Shell layer: a self-contained zsh (`nvix-zsh`) whose rc lives in the store via ZDOTDIR,
+          # plus the tools that rc relies on. The host's own zsh and ~/.zshrc are never touched;
+          # per-machine settings go in ~/.zshrc.local, which the rc sources if present.
+          shellTools = with pkgs; [ starship zoxide fzf fd eza gh ];
 
-          zshrc = pkgs.runCommand "nvix-zshrc" { } ''
-            substitute ${./zsh/zshrc} $out \
+          zdotdir = pkgs.runCommand "nvix-zdotdir" { } ''
+            mkdir -p $out
+            substitute ${./zsh/zshrc} $out/.zshrc \
               --subst-var-by starship_config ${./starship/starship.toml} \
               --subst-var-by autosuggestions ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
           '';
@@ -140,11 +143,13 @@
           shell = pkgs.symlinkJoin {
             name = "nvix-shell";
             paths = shellTools;
+            nativeBuildInputs = [ pkgs.makeWrapper ];
             postBuild = ''
-              mkdir -p $out/share/nvix
-              ln -s ${zshrc} $out/share/nvix/zshrc
-              ln -s ${./starship/starship.toml} $out/share/nvix/starship.toml
+              makeWrapper ${lib.getExe pkgs.zsh} $out/bin/nvix-zsh \
+                --set ZDOTDIR ${zdotdir} \
+                --prefix PATH : ${lib.makeBinPath shellTools}
             '';
+            meta.mainProgram = "nvix-zsh";
           };
         in
         {
