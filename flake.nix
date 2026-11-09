@@ -133,8 +133,8 @@
         });
 
       apps = forAllSystems (pkgs: {
-        default = { type = "app"; program = nixpkgs.lib.getExe self.packages.${pkgs.system}.nvim; };
-        tmux = { type = "app"; program = nixpkgs.lib.getExe self.packages.${pkgs.system}.tmux; };
+        default = { type = "app"; program = nixpkgs.lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.nvim; };
+        tmux = { type = "app"; program = nixpkgs.lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.tmux; };
       });
     };
 }
