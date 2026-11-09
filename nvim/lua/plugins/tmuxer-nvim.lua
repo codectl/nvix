@@ -1,10 +1,10 @@
 return {
-  "dkooll/tmuxer.nvim",
+  "codectl/tmuxer.nvim",
   dependencies = { "nvim-telescope/telescope.nvim" },
   cmd          = { "TmuxCreateSession", "TmuxSwitchSession", "TmuxToggleArchive" },
   config       = function()
     require("tmuxer").setup({
-      nvim_alias = "nvim",
+      -- nvim_alias = "NVIM_APPNAME=nvim-dev nvim",
       workspaces = {
         {
           name = "workspaces",

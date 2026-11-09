@@ -1,4 +1,4 @@
---❯ brew install gopls lua-language-server pyright rust-analyzer terraform-ls bash-language-server vscode-langservers-extracted
+--❯ brew install gopls lua-language-server pyright rust-analyzer terraform-ls bash-language-server vscode-langservers-extracted typescript-language-server
 return {
   {
     "neovim/nvim-lspconfig",

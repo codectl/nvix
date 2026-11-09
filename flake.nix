@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     # plugins not in nixpkgs (flake = false → plain sources, bumped by `nix flake update`)
-    tmuxer-nvim = { url = "github:dkooll/tmuxer.nvim"; flake = false; };
+    tmuxer-nvim = { url = "github:codectl/tmuxer.nvim"; flake = false; };
     splitjoin-nvim = { url = "github:bennypowers/splitjoin.nvim"; flake = false; };
     quickr-preview-vim = { url = "github:ronakg/quickr-preview.vim"; flake = false; };
     vim-maximizer = { url = "github:szw/vim-maximizer"; flake = false; };

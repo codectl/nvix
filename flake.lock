@@ -62,13 +62,13 @@
       "locked": {
         "lastModified": 1790088533,
         "narHash": "sha256-cvYxtmpKNQYUBKzKUQt7CU8/gBpOLX/BSb4PHYrgeds=",
-        "owner": "dkooll",
+        "owner": "codectl",
         "repo": "tmuxer.nvim",
         "rev": "2c9aca89e480a72c4f34e88a596c67cf1290a50c",
         "type": "github"
       },
       "original": {
-        "owner": "dkooll",
+        "owner": "codectl",
         "repo": "tmuxer.nvim",
         "type": "github"
       }

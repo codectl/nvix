@@ -1,7 +1,9 @@
 return {
   cmd = { "pyright-langserver", "--stdio" },
   filetypes = { "python" },
-  root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", "Pipfile", "pyrightconfig.json", ".git" },
+  -- Priority tiers (nvim 0.11+): repo-root markers win tree-wide, so a nested
+  -- `requirements.txt` (e.g. wac/backend/) never re-roots the server into a subdir.
+  root_markers = { { "pyproject.toml", "pyrightconfig.json", ".git" }, "setup.py", "setup.cfg", "requirements.txt", "Pipfile" },
   settings = {
     pyright = {
       disableOrganizeImports = true,
