@@ -60,11 +60,11 @@
     "tmuxer-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1790088533,
-        "narHash": "sha256-cvYxtmpKNQYUBKzKUQt7CU8/gBpOLX/BSb4PHYrgeds=",
+        "lastModified": 1794227150,
+        "narHash": "sha256-5VsIHZRfiv2miXfatK13DtG9lo82bdabDIdkWkzscHo=",
         "owner": "codectl",
         "repo": "tmuxer.nvim",
-        "rev": "2c9aca89e480a72c4f34e88a596c67cf1290a50c",
+        "rev": "f271dc0f61cedf6186ba7271f76b85a6f4cb04fb",
         "type": "github"
       },
       "original": {
