@@ -9,7 +9,7 @@ return {
       workspaces = {
         {
           name = "workspaces",
-          path = "~/Documents/workspaces"
+          path = "~/workspaces"
         }
       },
       max_depth = 2,
