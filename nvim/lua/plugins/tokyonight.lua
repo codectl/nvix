@@ -49,8 +49,8 @@ return {
       -- Capture colors are theme-wide (same role = same color in every language).
       -- Terraform only gets extra captures via after/queries/terraform/highlights.scm.
       hl["@variable.builtin"] = { fg = c.magenta } -- self/this/var/local: theme red is too loud
-      hl["@property"] = { fg = c.yellow }        -- fields/attribute names, all languages: theme teal disliked
-      hl["@variable.member"] = { fg = c.yellow }
+      hl["@property"] = { fg = c.blue }          -- keys / attribute names being defined (bucket = ...)
+      hl["@variable.member"] = { fg = c.yellow } -- fields being accessed (var.name, self.x)
       -- Glance (gd/gr/gy/gi)
       hl.GlanceBorderTop = { fg = tmux_line }
       hl.GlanceListBorderBottom = { fg = tmux_line }
