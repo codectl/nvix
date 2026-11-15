@@ -1,8 +1,8 @@
 -- Custom tabline
 local function setup_highlights()
-    vim.api.nvim_set_hl(0, 'TablineFilename', { fg = '#7DAEA3', bg = 'NONE' })
-  vim.api.nvim_set_hl(0, 'TablineLsp', { fg = '#D3869B', bg = 'NONE' })
-  vim.api.nvim_set_hl(0, 'TablineLazy', { fg = '#BD6F3E', bg = 'NONE', bold = true })
+  vim.api.nvim_set_hl(0, 'TablineFilename', { fg = '#7aa2f7', bg = 'NONE' })
+  vim.api.nvim_set_hl(0, 'TablineLsp', { fg = '#bb9af7', bg = 'NONE' })
+  vim.api.nvim_set_hl(0, 'TablineLazy', { fg = '#ff9e64', bg = 'NONE', bold = true })
   vim.api.nvim_set_hl(0, 'TablineFill', { bg = 'NONE' })
 end
 

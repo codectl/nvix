@@ -16,18 +16,10 @@ return {
       theme = "ivy",
       previewer = false,
       border = true,
-      parent_highlight = {
-        fg = "#9E8069",
-        bold = true,
-      },
       layout_config = {
         width = 0.5,
         height = 0.31,
       },
-      icons = {
-        window_hl = { fg = "#A9B665" },
-        floating_hl = { fg = "#D3869B" },
-      }
     })
   end,
   keys         = {

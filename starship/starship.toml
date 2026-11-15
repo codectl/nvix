@@ -163,6 +163,7 @@ style = "fg:#D769A1"
 [rust]
 symbol = " "
 style = "fg:#D769A1"
+format = "[$symbol($version )]($style)"
 
 
 [scala]

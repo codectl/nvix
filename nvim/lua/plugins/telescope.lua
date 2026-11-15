@@ -48,6 +48,20 @@ return {
         }, opts or {})
       end
 
+      -- Ivy pickers show only the line: no "Results"/prompt titles, unless a picker sets one explicitly.
+      -- Hooked here because plugins like tmuxer hardcode their titles.
+      local pickers = require("telescope.pickers")
+      local pickers_new = pickers.new
+      pickers.new = function(opts, defaults)
+        opts = opts or {}
+        if opts.theme == "ivy" then
+          for _, k in ipairs({ "prompt_title", "results_title", "preview_title" }) do
+            if opts[k] == nil then opts[k] = false end
+          end
+        end
+        return pickers_new(opts, defaults)
+      end
+
       -- Treesitter display (lazy-created on first use)
       local ts_displayer
       local function get_ts_displayer()
@@ -161,9 +175,8 @@ return {
       -- Quickfix history picker
       local M = {}
 
-      local function ivy_opts(title, previewer)
+      local function ivy_opts(previewer)
         return require("telescope.themes").get_ivy({
-          prompt_title = title,
           previewer = previewer or false,
           layout_config = { height = 0.31 },
           borderchars = previewer and preview_border or nil,
@@ -181,7 +194,7 @@ return {
           return
         end
 
-        pickers.new(ivy_opts("Quickfix Entries", true), {
+        pickers.new(ivy_opts(true), {
           finder = finders.new_table({
             results = qf_list,
             entry_maker = function(entry)
@@ -235,7 +248,7 @@ return {
           lists[i] = { nr = i, title = qf.title ~= "" and qf.title or ("Quickfix #" .. i), size = qf.size or 0 }
         end
 
-        pickers.new(ivy_opts("Quickfix History"), {
+        pickers.new(ivy_opts(), {
           finder = finders.new_table({
             results = lists,
             entry_maker = function(entry)

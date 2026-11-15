@@ -37,16 +37,10 @@ return {
       { "q", "", "Quit", ":qa<CR>" }
     })
 
-    local function set_highlight(group, color)
-      vim.api.nvim_set_hl(0, group, { fg = color })
-    end
-
-    set_highlight("AlphaHeader", 0xB87333)
-    set_highlight("AlphaFooter", 0x808080)
-    set_highlight("AlphaShortcut", 0x808080)
-    set_highlight("AlphaButtons", 0x808080)
-
-    dashboard.section.header.opts.hl = "AlphaHeader"
+    -- logo in AlphaHeader, the "nix only" tagline in AlphaTagline
+    dashboard.section.header.opts.hl = vim.tbl_map(function(line)
+      return { { line:find("nix only") and "AlphaTagline" or "AlphaHeader", 0, -1 } }
+    end, dashboard.section.header.val)
     dashboard.section.buttons.opts.hl = "AlphaButtons"
     dashboard.section.footer.opts.hl = "AlphaFooter"
     dashboard.opts.layout[1].val = 8

@@ -9,7 +9,7 @@ require("lazy").setup("plugins", {
   },
   install = {
     missing = false,
-    colorscheme = { "catppuccin" },
+    colorscheme = { "tokyonight" },
   },
   dev = {
     path = vim.g.nvix_plugins,

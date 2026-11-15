@@ -44,12 +44,11 @@
             };
 
           # Directory of <lazy plugin name> → store path. lazy.nvim's `dev.path` points here;
-          # names must equal what lazy derives from the spec ("owner/repo" → "repo", catppuccin special-cased).
+          # names must equal what lazy derives from the spec ("owner/repo" → "repo").
           lazyPlugins = pkgs.linkFarm "nvix-lazy-plugins" {
             "lazy.nvim" = vp.lazy-nvim;
             "Comment.nvim" = vp.comment-nvim;
             "alpha-nvim" = vp.alpha-nvim;
-            "catppuccin" = vp.catppuccin-nvim;
             "cmp-nvim-lsp" = vp.cmp-nvim-lsp;
             "cmp-path" = vp.cmp-path;
             "fidget.nvim" = vp.fidget-nvim;
@@ -78,6 +77,7 @@
             "telescope-undo.nvim" = vp.telescope-undo-nvim;
             "telescope.nvim" = vp.telescope-nvim;
             "todo-comments.nvim" = vp.todo-comments-nvim;
+            "tokyonight.nvim" = vp.tokyonight-nvim;
             "trouble.nvim" = vp.trouble-nvim;
             "tmuxer.nvim" = fromInput "tmuxer-nvim";
             "splitjoin.nvim" = fromInput "splitjoin-nvim";
