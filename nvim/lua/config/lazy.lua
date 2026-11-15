@@ -23,7 +23,7 @@ require("lazy").setup("plugins", {
     reset_packpath = true,
     rtp = {
       reset = true,
-      paths = { vim.g.nvix_config },
+      paths = { vim.g.nvix_config, vim.g.nvix_config .. "/after" },
       disabled_plugins = {
         "gzip", "matchit", "matchparen", "netrwPlugin",
         "tarPlugin", "tohtml", "tutor", "zipPlugin"

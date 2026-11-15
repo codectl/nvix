@@ -46,11 +46,11 @@ return {
       hl.TelescopePromptTitle = { fg = c.blue, bold = true }
       hl.TelescopeResultsTitle = { fg = c.blue, bold = true }
       hl.TelescopePreviewTitle = { fg = c.blue, bold = true }
-      -- Terraform: attribute names plain fg, var/local/module/data = package qualifier (@module)
-      hl["@variable.member.terraform"] = { fg = c.fg }
-      hl["@variable.member.hcl"] = { fg = c.fg }
-      hl["@variable.builtin.terraform"] = { link = "@module" }
-      hl["@variable.builtin.hcl"] = { link = "@module" }
+      -- Capture colors are theme-wide (same role = same color in every language).
+      -- Terraform only gets extra captures via after/queries/terraform/highlights.scm.
+      hl["@variable.builtin"] = { fg = c.magenta } -- self/this/var/local: theme red is too loud
+      hl["@property"] = { fg = c.yellow }        -- fields/attribute names, all languages: theme teal disliked
+      hl["@variable.member"] = { fg = c.yellow }
       -- Glance (gd/gr/gy/gi)
       hl.GlanceBorderTop = { fg = tmux_line }
       hl.GlanceListBorderBottom = { fg = tmux_line }
