@@ -51,7 +51,7 @@ return {
     { "<leader>of",  function() call_config("find_notes") end,                                           desc = "Obsidian: Find notes" },
     { "<leader>ob",  function() call_config("show_backlinks") end,                                       desc = "Obsidian: Show backlinks" },
     { "<leader>ol",  function() call_config("show_links") end,                                           desc = "Obsidian: Show links" },
-    { "<leader>or",  "<cmd>ObsidianRename<CR>",                                                          desc = "Obsidian: Rename note" },
+    { "<leader>or",  "<cmd>Obsidian rename<CR>",                                                         desc = "Obsidian: Rename note" },
     { "<leader>ow",  function() call_config("switch_workspace") end,                                     desc = "Obsidian: Switch workspace" },
     { "<leader>ot",  function() call_config("find_tags") end,                                            desc = "Obsidian: Find tags" },
   },
@@ -69,26 +69,10 @@ return {
     local NOTES_PATH_PATTERNS = { "obsidian%-notes" }
     local CACHE_DURATION = 10
     local WORKSPACES = {
-      { name = "tech",       path = "~/Documents/workspaces/dkooll/obsidian-notes/tech" },
-      { name = "worship",    path = "~/Documents/workspaces/dkooll/obsidian-notes/worship" },
-      { name = "kubernetes", path = "~/Documents/workspaces/dkooll/obsidian-notes/karpathy-kubernetes" },
-      { name = "alz",        path = "~/Documents/workspaces/dkooll/obsidian-notes/karpathy-alz" },
-      { name = "strong",     path = "~/Documents/workspaces/dkooll/obsidian-notes/karpathy-strong" },
+      { name = "tech",       path = "~/workspaces/internal/obsidian-notes/tech" },
     }
 
-    local highlights = {
-      NotesBrown = { fg = "#9E8069" },
-      NotesBlue = { fg = "#7DAEA3" },
-      ObsidianParentDir = { fg = "#9E8069" },
-      NotesWhiteItalic = { fg = "#C0B8A8", italic = true },
-      NotesLightItalic = { fg = "#C0B8A8", italic = true },
-      NotesYamlString = { fg = "#968A80", italic = true },
-      NotesYamlKey = { fg = "#C0B8A8" },
-      NotesSearchMatch = { bg = "#3a3a3a" },
-    }
-    for name, opts in pairs(highlights) do
-      vim.api.nvim_set_hl(0, name, opts)
-    end
+    -- note highlights come from the theme (tokyonight.lua), defined there with the rest
 
     local NOTES_HIGHLIGHTS = table.concat({
       "@punctuation.special:NotesBrown",
@@ -284,10 +268,9 @@ return {
       return vim.fn.expand(WORKSPACES[1].path)
     end
 
-    local function telescope_opts(title, opts)
+    local function telescope_opts(_, opts)
       opts = opts or {}
       return themes.get_ivy({
-        prompt_title = title .. " (" .. vim.g.obsidian_current_workspace .. ")",
         cwd = opts.cwd,
         previewer = opts.previewer or false,
         layout_config = { height = 0.31 },
@@ -620,109 +603,109 @@ return {
 
     package.loaded["obsidian-config"] = obsidian_config
 
+    -- note-buffer keymaps (obsidian.nvim dropped `mappings`)
+    local function gf_in_note()
+      -- Extract the full [[...]] wikilink from the current line at cursor position
+      local line = vim.api.nvim_get_current_line()
+      local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- 1-indexed
+      local filename
+      for link_start, link_path, link_end in line:gmatch('()%[%[([^%]]+)%]%]()') do
+        if col >= link_start and col < link_end then
+          filename = link_path:match('^([^|]+)') -- strip |display text
+          break
+        end
+      end
+      if not filename then
+        local cfile = vim.fn.expand('<cfile>')
+        if cfile:match('^https?://') then
+          vim.fn.system('open ' .. vim.fn.shellescape(cfile)); return ''
+        end
+        filename = cfile:gsub('%[%[', ''):gsub('%]%]', '')
+      end
+      if filename:match('^https?://') then
+        vim.fn.system('open ' .. vim.fn.shellescape(filename)); return ''
+      end
+      local function find_workspace_root()
+        local dir = vim.fn.expand('%:p:h')
+        for _ = 1, 5 do
+          if vim.fn.isdirectory(dir .. '/attachments') == 1 then return dir end
+          dir = vim.fn.fnamemodify(dir, ':h')
+        end
+        return vim.fn.expand('%:p:h:h')
+      end
+      local workspace_root = find_workspace_root()
+      if filename:match('%.png$') or filename:match('%.jpe?g$') then
+        vim.fn.system('open ' .. vim.fn.shellescape(workspace_root .. '/attachments/' .. filename))
+        return ''
+      end
+      if filename:match('%.ya?ml$') then
+        local full_path = workspace_root .. '/configs/' .. filename
+        if vim.fn.filereadable(full_path) == 1 then
+          return '<cmd>edit ' .. vim.fn.fnameescape(full_path) .. '<CR>'
+        end
+      end
+      local wiki_root = workspace_root .. '/wiki/'
+      local candidates = {
+        workspace_root .. '/' .. filename,
+        wiki_root .. filename .. '.md',
+        vim.fn.expand('%:p:h') .. '/' .. filename .. '.md',
+      }
+      for _, path in ipairs(candidates) do
+        if vim.fn.filereadable(path) == 1 then
+          return '<cmd>edit ' .. vim.fn.fnameescape(path) .. '<CR>'
+        end
+      end
+      local basename = (filename:match('[^/]+$') or filename) .. '.md'
+      local found = wiki_lookup(wiki_root, basename)
+      if found then
+        return '<cmd>edit ' .. vim.fn.fnameescape(found) .. '<CR>'
+      end
+      if require("obsidian.api").cursor_link() then
+        return '<cmd>Obsidian follow_link<CR>'
+      end
+      return 'gf'
+    end
+
+    vim.api.nvim_create_autocmd("FileType", {
+      group = autocmds,
+      pattern = "markdown",
+      callback = function(args)
+        if not matches_notes_path(vim.api.nvim_buf_get_name(args.buf)) then return end
+        vim.keymap.set("n", "gf", gf_in_note, { buffer = args.buf, expr = true, desc = "Obsidian: Follow link" })
+        vim.keymap.set("n", "<leader>ch", function() require("obsidian.actions").toggle_checkbox() end,
+          { buffer = args.buf, desc = "Obsidian: Toggle checkbox" })
+      end,
+    })
+
     require("obsidian").setup({
+      legacy_commands = false,
       workspaces = WORKSPACES,
       log_level = vim.log.levels.WARN,
-      templates = { subdir = "templates", date_format = "%Y-%m-%d", time_format = "%H:%M" },
-      completion = { nvim_cmp = true, min_chars = 2, use_path_only = true },
-      mappings = {
-        ["gf"] = {
-          action = function()
-            -- Extract the full [[...]] wikilink from the current line at cursor position
-            local line = vim.api.nvim_get_current_line()
-            local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- 1-indexed
-            local filename
-            for link_start, link_path, link_end in line:gmatch('()%[%[([^%]]+)%]%]()') do
-              if col >= link_start and col < link_end then
-                filename = link_path:match('^([^|]+)') -- strip |display text
-                break
-              end
-            end
-            if not filename then
-              local cfile = vim.fn.expand('<cfile>')
-              if cfile:match('^https?://') then
-                vim.fn.system('open ' .. vim.fn.shellescape(cfile)); return ''
-              end
-              filename = cfile:gsub('%[%[', ''):gsub('%]%]', '')
-            end
-            if filename:match('^https?://') then
-              vim.fn.system('open ' .. vim.fn.shellescape(filename)); return ''
-            end
-            local function find_workspace_root()
-              local dir = vim.fn.expand('%:p:h')
-              for _ = 1, 5 do
-                if vim.fn.isdirectory(dir .. '/attachments') == 1 then return dir end
-                dir = vim.fn.fnamemodify(dir, ':h')
-              end
-              return vim.fn.expand('%:p:h:h')
-            end
-            local workspace_root = find_workspace_root()
-            if filename:match('%.png$') or filename:match('%.jpe?g$') then
-              vim.fn.system('open ' .. vim.fn.shellescape(workspace_root .. '/attachments/' .. filename))
-              return ''
-            end
-            if filename:match('%.ya?ml$') then
-              local full_path = workspace_root .. '/configs/' .. filename
-              if vim.fn.filereadable(full_path) == 1 then
-                return '<cmd>edit ' .. vim.fn.fnameescape(full_path) .. '<CR>'
-              end
-            end
-            local wiki_root = workspace_root .. '/wiki/'
-            local candidates = {
-              workspace_root .. '/' .. filename,
-              wiki_root .. filename .. '.md',
-              vim.fn.expand('%:p:h') .. '/' .. filename .. '.md',
-            }
-            for _, path in ipairs(candidates) do
-              if vim.fn.filereadable(path) == 1 then
-                return '<cmd>edit ' .. vim.fn.fnameescape(path) .. '<CR>'
-              end
-            end
-            local basename = (filename:match('[^/]+$') or filename) .. '.md'
-            local found = wiki_lookup(wiki_root, basename)
-            if found then
-              return '<cmd>edit ' .. vim.fn.fnameescape(found) .. '<CR>'
-            end
-            return require("obsidian").util.gf_passthrough()
-          end,
-          opts = { noremap = false, expr = true, buffer = true },
-        },
-        ["<leader>ch"] = {
-          action = function() return require("obsidian").util.toggle_checkbox() end,
-          opts = { buffer = true },
-        },
-      },
+      templates = { folder = "templates", date_format = "%Y-%m-%d", time_format = "%H:%M" },
+      completion = { min_chars = 2, use_path_only = true }, -- completion comes from obsidian-ls via cmp-nvim-lsp
       new_notes_location = "current_dir",
-      wiki_link_func = function(opts)
-        return string.format("[[%s]]", opts.path:match("([^/]+)%.md$") or opts.path)
-      end,
+      link = { style = "wiki", format = "shortest" },
       note_id_func = function(title)
         return os.date("%Y-%m-%d") .. "-" .. title:gsub("[^%w%s%-]", ""):gsub("%s+", "-"):lower()
       end,
-      sort_by = "modified",
-      sort_reversed = true,
+      search = { sort_by = "modified", sort_reversed = true },
+      checkbox = { order = { " ", "x", ">", "~" } },
       ui = {
         enable = true,
         update_debounce = 200,
         max_file_length = 5000,
-        checkboxes = {
-          [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-          ["x"] = { char = "", hl_group = "ObsidianDone" },
-          [">"] = { char = "", hl_group = "ObsidianRightArrow" },
-          ["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
-        },
         hl_groups = {
-          ObsidianTodo = { bold = true, fg = "#9E8069" },
-          ObsidianDone = { bold = true, fg = "#9E8069" },
-          ObsidianRightArrow = { bold = true, fg = "#9E8069" },
-          ObsidianTilde = { bold = true, fg = "#9E8069" },
+          ObsidianTodo = { link = "NotesAccentBold" },
+          ObsidianDone = { link = "NotesAccentBold" },
+          ObsidianRightArrow = { link = "NotesAccentBold" },
+          ObsidianTilde = { link = "NotesAccentBold" },
         },
       },
       attachments = {
-        img_folder = "attachments",
-        img_text_func = function(client, path)
-          path = client:vault_relative_path(path) or path
-          return string.format("![%s](%s)", path.name, path)
+        folder = "attachments",
+        img_text_func = function(path)
+          local p = tostring(path)
+          return string.format("![%s](%s)", vim.fs.basename(p), p:match("attachments/.*$") or p)
         end,
       },
     })

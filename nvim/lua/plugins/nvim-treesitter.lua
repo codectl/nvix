@@ -7,6 +7,12 @@ return {
       -- parsers are precompiled by Nix (flake.nix: treesitter.withPlugins) and live on the rtp
       require("nvim-treesitter").setup()
 
+      -- fenced-code info strings that don't match a parser name (```yml, ```sh, ```tf) still get injected
+      vim.treesitter.language.register("yaml", { "yml" })
+      vim.treesitter.language.register("bash", { "sh", "shell", "zsh", "console" })
+      vim.treesitter.language.register("terraform", { "tf", "tfvars" })
+      vim.treesitter.language.register("python", { "py" })
+
       -- enable highlighting + indent for all filetypes with a parser
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(args)

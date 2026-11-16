@@ -29,10 +29,36 @@ return {
       hl.FloatBorder = { fg = c.border }
       hl.FoldColumn = { fg = c.fg_gutter }
       hl.Folded = { fg = c.comment }
-      hl.DiffAdd = { bg = "#2d4a3d" }
-      hl.DiffDelete = { bg = "#4a2f3d" }
-      hl.DiffChange = { bg = "#2f3b55" }
-      hl.DiffText = { bg = "#3d5a8a", bold = true }
+      -- vimdiff (gitsigns diffthis / blame → commit): no row backgrounds; sign column + fold show the hunks
+      hl.DiffAdd = { bg = "NONE" }
+      hl.DiffDelete = { fg = c.fg_gutter, bg = "NONE" }
+      hl.DiffChange = { bg = "NONE" }
+      hl.DiffText = { bg = "NONE", bold = true, underline = true }
+      -- commit/patch buffers (gitsigns blame → show commit): colored text, no row backgrounds
+      hl.diffAdded = { fg = c.green }
+      hl.diffRemoved = { fg = c.red }
+      hl.diffChanged = { fg = c.blue }
+      hl.diffOldFile = { fg = c.red }
+      hl.diffNewFile = { fg = c.green }
+      hl.diffFile = { fg = c.blue, bold = true }
+      hl.diffLine = { fg = c.comment }
+      hl.diffIndexLine = { fg = c.comment }
+      hl["@diff.plus"] = { fg = c.green }
+      hl["@diff.minus"] = { fg = c.red }
+      hl["@diff.delta"] = { fg = c.blue }
+      hl.GitSignsAddLn = { bg = "NONE" }
+      hl.GitSignsDeleteLn = { bg = "NONE" }
+      hl.GitSignsChangeLn = { bg = "NONE" }
+      -- Obsidian notes (obsedian.lua applies these via winhighlight / extmarks)
+      hl.NotesAccentBold = { fg = c.blue, bold = true }
+      hl.NotesBrown = { fg = c.comment }
+      hl.NotesBlue = { fg = c.blue }
+      hl.ObsidianParentDir = { fg = c.comment }
+      hl.NotesWhiteItalic = { fg = c.fg_dark, italic = true }
+      hl.NotesLightItalic = { fg = c.fg_dark, italic = true }
+      hl.NotesYamlString = { fg = c.comment, italic = true }
+      hl.NotesYamlKey = { fg = c.fg_dark }
+      hl.NotesSearchMatch = { bg = "#3b4261" }
       local tmux_line = "#1c1c1c" -- tmux pane-active-border-style
       hl.TelescopeBorder = { fg = tmux_line }
       hl.TelescopePromptBorder = { fg = tmux_line }
@@ -50,7 +76,16 @@ return {
       -- Terraform only gets extra captures via after/queries/terraform/highlights.scm.
       hl["@variable.builtin"] = { fg = c.magenta } -- self/this/var/local: theme red is too loud
       hl["@property"] = { fg = c.blue }          -- keys / attribute names being defined (bucket = ...)
-      hl["@variable.member"] = { fg = c.yellow } -- fields being accessed (var.name, self.x)
+      hl["@variable.member"] = { link = "@variable" } -- field access reads as a plain variable; theme teal disliked
+      hl["@type.builtin"] = { fg = c.blue1 }     -- string/number/object(...): theme dims these, keep full type color
+      hl["@string.special"] = { fg = c.magenta } -- names-as-strings: terraform block labels, tags
+      -- completion menu (nvim-cmp): no background, selected row by color only
+      hl.Pmenu = { bg = "NONE" }
+      hl.PmenuSel = { fg = c.blue, bg = "NONE", bold = true }
+      hl.PmenuSbar = { bg = "NONE" }
+      hl.PmenuThumb = { bg = c.fg_gutter }
+      hl.CmpItemAbbrMatch = { fg = c.blue, bold = true }
+      hl.CmpItemAbbrMatchFuzzy = { fg = c.blue, bold = true }
       -- Glance (gd/gr/gy/gi)
       hl.GlanceBorderTop = { fg = tmux_line }
       hl.GlanceListBorderBottom = { fg = tmux_line }
